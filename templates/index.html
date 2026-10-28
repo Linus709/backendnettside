@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="content">
+    <img src="{{ url_for('static', filename='shittybank.png') }}" alt="Logo">
+
+    <form method="POST">
+                <input type="text" name="username" placeholder="Write username here" required>
+                <input type="password" name="password" placeholder="Write password here" required>
+
+                <h1><button type="submit" name="action" value="register">Create account</button></h1>
+                <button type="submit" name="action" value="login">Login</button>
+    </form>
+</div>
+
+<div class="Slagord">
+    <p>Safest bank in the world!!!</p>
+</div>
+
+<div class="Award">
+    <img src="{{ url_for('static', filename='award.avif') }}" alt="Logo">
+</div>
+
+{% endblock %}

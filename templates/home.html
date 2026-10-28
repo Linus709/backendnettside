@@ -1,0 +1,29 @@
+
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+
+<h1>WELCOME TO HOMEPAGE</h1>
+
+<h2>Total money: {{ total }} $</h2>
+
+<form method="POST" action="/home">
+
+    <button type="submit" name="Money" value="1000000">
+        ADD 1 000 000 DOLLARS
+    </button>
+
+    <button type="submit" name="Money" value="500000">
+        ADD 500 000 DOLLARS
+    </button>
+
+    <button type="submit" name="Money" value="100000">
+        ADD 100 000 DOLLARS
+    </button>
+
+</form>
+
+{% endblock %}

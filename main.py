@@ -226,6 +226,7 @@ def delete():
 
     except:
         db.session.rollback()
+        #this code just makes sure that if it didnt work we keep those ncommited changes
         print("it didnt work!")
         return redirect("/home")
 
@@ -237,10 +238,12 @@ def bankreset():
             return redirect("/")
     
     user_id = session["user_id"]
+    #this 2 codes make so it knows about the user that is logged in now and the bank login username and password
     bank = Bank.query.filter_by(user_id=user_id).first()
     
     if bank:
         bank.total = 0
+        #sets bank total at 0 and commits to database and prints out in my terminal that it worked then last keeps me at home html
         db.session.commit()
         print("bankreset DONE")
     return redirect("/home")
@@ -275,6 +278,10 @@ if __name__ == "__main__":
 # remember money after restarting  DONE 
 # log out   DONE
 # secure password storage DONE
+# Make webiste look like ATM from 90s NOT DONE
+
+#how to make website look like atm from 90s
+#commonly displayed colors are green, amber/orange or blue text against dark background
 
 #viktig å vite
 #flask + sqlalchemy: lagrer brukere i test db og gjør så innlogging funker på min nettside

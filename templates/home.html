@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block head %}
@@ -6,31 +5,36 @@
 
 {% block body %}
 
-<h1>WELCOME TO HOMEPAGE</h1>
+<div style="text-align: center; border: 3px double #ffffff; padding: 15px; background-color: #000066; width: 700px; margin: 0 auto;">
 
-<h2>Total money: {{ total }} $</h2>
+    <h1>=== ACCOUNT DASHBOARD ===</h1>
 
-<form method="POST" action="/home">
+    <h2>Total money: {{ total }} $</h2>
+    <hr style="border: 1px solid #ffff00; width: 60%;">
 
-    <button type="submit" name="Money" value="1000000">
-        ADD 1 000 000 DOLLARS
-    </button>
+    <p>Select deposit amount:</p>
+    <form method="POST" action="/home">
+        <button type="submit" name="Money" value="1000">Add 1000 Dollars</button>
+        <button type="submit" name="Money" value="100">Add 100 Dollars</button>
+        <button type="submit" name="Money" value="10">Add 10 Dollars</button>
+        <button type="submit" name="Money" value="1">Add 1 Dollars</button>
+    </form>
 
-    <button type="submit" name="Money" value="500000">
-        ADD 500 000 DOLLARS
-    </button>
+    <br>
+    <hr style="border: 1px dashed #c0c0c0; width: 40%;">
 
-    <button type="submit" name="Money" value="100000">
-        ADD 100 000 DOLLARS
-    </button>
+    <form method="POST" action="/logout">
+        <button type="submit" style="background-color: #e0e0e0;">Logout</button>
+    </form>
 
-</form>
+    <form method="POST" action="/Bankreset">
+        <button type="submit" style="background-color: #ffcccc;">Bankreset</button>
+    </form>
 
-<form method="GET" action="/">
+    <form method="POST" action="/delete">
+        <button type="submit" style="background-color: #ff0000; color: white;">DELETE ACCOUNT</button>
+    </form>
 
- <button type="submit" name="Logout" value="delete">Logout</button>
-
-
-</form>
+</div>
 
 {% endblock %}

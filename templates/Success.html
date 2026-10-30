@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SUCCESS</title>
 </head>
-<body>
-    <img src="{{ url_for('static', filename='success.png') }}" alt="Logo">
-    <body style="background-color: rgb(86, 164, 57);">
+<body style="background-color: rgb(34, 110, 34); color: white; text-align: center; font-family: 'Courier New', Courier, monospace; margin-top: 50px;">
+    <div style="border: 4px outset #ffffff; display: inline-block; padding: 20px; background-color: rgb(86, 164, 57);">
+        <h2>[ TRANSACTION ACCEPTED ]</h2>
+        <img src="{{ url_for('static', filename='success.png') }}" alt="Success Logo" style="border: 2px solid white;">
+    </div>
 </body>
 </html>

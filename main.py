@@ -179,31 +179,71 @@ def home():
         bank = Bank(user_id=user_id, total=0)
         #denne gjør så if user id total = 0 så lag en ny bank 
         db.session.add(bank)
+        bank.total = 0
         db.session.commit()
 
     # When a button is clicked
     if request.method == "POST":
         Money = request.form.get("Money")
 
-        if Money in ["1000000", "500000", "100000"]:
+        if Money in ["1000", "100", "10", "1"]:
             bank.total = bank.total + int(Money)
             db.session.commit()
 
-            return ("/home")
+            return redirect("/home")
     
     return render_template("home.html", total=bank.total)
 
-@app.route("/home", methods=["GET"])
+@app.route("/logout", methods=["POST"])
 def logout():
 
+    session.clear()
+    return redirect("/")
 
-    if request.method == "GET":
-        Logout = request.form.get("Logout")
-        Logout = True
 
-        if Logout is True:
-            print("hello")
 
+#DELETE BUTTON CODE 
+@app.route('/delete', methods=["POST"])
+def delete():
+    id = session.get("user_id")
+    user_id = session["user_id"]
+    bank = Bank.query.filter_by(user_id=user_id).first()
+#this gets the user id that is logged in now
+    if id is None:
+        return redirect("/")
+# if there is no id go back home
+
+    user_to_delete = User.query.get_or_404(id)
+#if you are deleting a user you must query first and this searchs the database of user given id
+    try:
+        db.session.delete(user_to_delete)
+        bank.total = 0
+        db.session.commit()
+        session.clear()
+        print("USER DELETED SUCCESSFULLY!")
+        return redirect("/")
+# this is the code that will delete the user and clear logs the user out and removes everything stored in flask session
+
+    except:
+        db.session.rollback()
+        print("it didnt work!")
+        return redirect("/home")
+
+
+#This button code will reset your bank money
+@app.route("/Bankreset", methods=["POST"])
+def bankreset():
+    if "user_id" not in session:
+            return redirect("/")
+    
+    user_id = session["user_id"]
+    bank = Bank.query.filter_by(user_id=user_id).first()
+    
+    if bank:
+        bank.total = 0
+        db.session.commit()
+        print("bankreset DONE")
+    return redirect("/home")
 
 
     
@@ -214,9 +254,6 @@ def wrong ():
 @app.route("/Success")
 def Success ():
     return render_template("Success.html")
-
-
-#hashing code under here
 
 
 with app.app_context():
@@ -236,7 +273,7 @@ if __name__ == "__main__":
 # seperate balance for each user    DONE
 # add money with buttons   DONE
 # remember money after restarting  DONE 
-# log out   ONGOING
+# log out   DONE
 # secure password storage DONE
 
 #viktig å vite

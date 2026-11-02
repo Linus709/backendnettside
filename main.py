@@ -5,6 +5,7 @@ from typing import Tuple
 from datetime import datetime
 
 #all this code under here to make it possible to login and make a user and hash
+#i have created everything here and is used by me to learn backend coding here.
 
 app = Flask(__name__)
 app.secret_key = "Change-this-to-a-long-random-secret"
@@ -16,7 +17,7 @@ class User(db.Model):
     # lagrer data i kolonner/column i id tall/integer 
     username = db.Column(db.String(150), unique=True, nullable=False)
     # lagrer data i kolonner/column i username string
-    password = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(150), unique=True, nullable=False)
     #lagrer data i kolonner/column i password string
 
     def __repr__(self):
@@ -42,9 +43,15 @@ def index():
 
             hashed_password = hash_pwd(password).decode("utf-8")
             new_user = User(username=username, password=hashed_password)
-            db.session.add(new_user)
-            db.session.commit()
-            return app.redirect("/Success")
+            if not password.isdigit():
+                return redirect("/wrong.html")
+            
+            if not username.isalpha():
+                return redirect("/wrong.html")
+            else:
+                db.session.add(new_user)
+                db.session.commit()
+                return app.redirect("/Success")
 #this code makes it possible to write a new username and password if it was valid then it will return Account was created. 
 
         elif action == "login":
@@ -64,11 +71,11 @@ def index():
 #HASHING CODE UNDER HERE
 
         # handles the function
-def hash_pwd(password:str, rounds=12) -> bytes:
+def hash_pwd(password:int, rounds=12) -> bytes:
     pwd = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=rounds))
     return pwd
 
-def check_pwd(password:str,hash:bytes) -> bool:
+def check_pwd(password:int,hash:bytes) -> bool:
     return bcrypt.checkpw(password.encode(),hash)
 #koden over her gir passordet en hash som kan lagres og sjekke om passordet stemmer med hashet på chech_pwd
 
@@ -248,7 +255,24 @@ def bankreset():
         print("bankreset DONE")
     return redirect("/home")
 
+@app.route("/pinnumbers", methods=["POST"])
+def pinnumbers():
 
+    if request.method == "POST":
+        Pin = request.form.get("Pin")
+
+        if Pin in ["1", "2", "3", "4", "5", "6", "7", "8", "9" "0"]:
+            password = password +int(Pin)
+            db.session.commit()
+
+        return redirect("/")
+        
+    return render_template("/home.html")
+
+@app.route("/clear", methods=["POST"])
+def clear():
+    session.clear()
+    return redirect("/")
     
 @app.route("/wrong")
 def wrong ():
@@ -278,10 +302,14 @@ if __name__ == "__main__":
 # remember money after restarting  DONE 
 # log out   DONE
 # secure password storage DONE
-# Make webiste look like ATM from 90s NOT DONE
+# Make webiste look like ATM from 90s DONE
+# make website only register and login with pincode/integer ONGOING
+# make website only register and login with username/string ONGOING
+# make pins 123456789 work to pincode register and login NOT DONE
+# make clear to refresh main page NOT DONE
+# enter button to login or register into website NOT DONE 
 
-#how to make website look like atm from 90s
-#commonly displayed colors are green, amber/orange or blue text against dark background
+
 
 #viktig å vite
 #flask + sqlalchemy: lagrer brukere i test db og gjør så innlogging funker på min nettside

@@ -1,91 +1,203 @@
-/* --- Retro Bank Theme --- */
+/* --- 1995 ATM Theme --- */
+# this is not created by me
 
 body {
-    background-color: #000080; /* Classic Navy Blue */
-    color: #ffff00; /* Classic Yellow text */
+    background-color: #1a1a1a; /* Dark background behind the ATM machine */
+    color: #00ff00;            /* Phosphor green text */
     font-family: "Courier New", Courier, monospace;
-    margin: 20px;
-}
-
-h1, h2 {
-    font-family: "Times New Roman", Times, serif;
-    color: #ffffff;
-    text-shadow: 2px 2px #000000;
-    text-align: center;
-}
-
-.content {
-    font-family: "Courier New", Courier, monospace;
-    text-align: center;
-    border: 4px ridge #c0c0c0;
-    background-color: #000084;
+    margin: 0;
     padding: 20px;
-    margin: 0 auto;
-    width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-table {
+/* The Main ATM Plastic Casing */
+.atm-machine {
+    background-color: #d1c9b8; /* Classic 90s beige/off-white plastic */
+    border: 6px outset #f0e6d2;
+    border-radius: 8px;
+    padding: 30px;
+    width: 740px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.6);
     margin: 0 auto;
+}
+
+/* CRT Monitor Screen Bezel */
+.atm-screen-bezel {
+    background-color: #4a4740; /* Dark gray recessed monitor border */
+    border: 5px inset #2b2925;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* The Actual CRT Screen */
+.crt-screen {
+    background-color: #001100; /* Deep black-green CRT background */
+    border: 4px inset #003300;
+    color: #00ff00;            /* Bright green monochrome text */
+    padding: 15px;
+    width: 440px;
+    min-height: 240px;
+    box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.4);
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    font-family: "Courier New", Courier, monospace;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Scanline overlay effect for retro feel */
+.crt-screen::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* ATM Side Selection Buttons (Soft Keys) */
+.atm-buttons-left, .atm-buttons-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.atm-side-btn {
+    width: 35px;
+    height: 22px;
+    background-color: #e3decb;
+    border: 2px outset #ffffff;
+    cursor: pointer;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.atm-side-btn:active {
+    border: 2px inset #ffffff;
+    background-color: c5bfae;
+}
+
+/* Lower ATM Control Panel (Keypad & Slots) */
+.atm-control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #c4bca8;
+    padding: 15px;
+    border: 3px inset #a39c89;
+    border-radius: 4px;
+}
+
+/* Cash Dispenser Slot */
+.atm-slot {
+    background-color: #2b2925;
+    border: 3px inset #111;
+    width: 120px;
+    height: 45px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.atm-slot::after {
+    content: "";
+    width: 80px;
+    height: 4px;
+    background-color: #000;
+}
+
+/* Retro Numeric Keypad */
+.atm-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 40px);
+    gap: 5px;
+    background-color: #5c574e;
+    padding: 8px;
+    border: 3px inset #333;
+}
+
+.keypad-btn {
+    background-color: #e3decb;
+    border: 2px outset #fff;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    font-size: 14px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.keypad-btn.clear { background-color: #d9b3b3; color: #600; }
+.keypad-btn.cancel { background-color: #ff6666; color: #fff; }
+.keypad-btn.enter { background-color: #66b366; color: #fff; }
+.keypad-btn:active { border: 2px inset #fff; }
+
+/* Card Reader Graphic */
+.card-reader {
+    background-color: #3b3732;
+    border: 2px inset #222;
+    width: 70px;
+    height: 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.card-slot-line {
+    width: 4px;
+    height: 30px;
+    background-color: #000;
+    border-left: 1px solid #555;
+}
+
+/* General Typography & Elements inside the CRT */
+h1, h2 {
+    font-family: "Courier New", Courier, monospace;
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+    font-size: 16px;
+    margin: 5px 0;
+    text-align: center;
+}
+
+p {
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 8px 0;
 }
 
 input {
-    text-align: center;
-    padding: 8px;
-    margin: 5px;
-    background-color: #ffffff;
-    border: 2px inset #000000;
+    background-color: #001100;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 4px;
     font-family: "Courier New", Courier, monospace;
+    width: 90%;
 }
 
-img {
-    width: 400px;
-    height: 220px;
-    border: 3px outset #ffffff;
-    margin-bottom: 10px;
-}
-
-button {
-  background-color: #c0c0c0; /* Windows 95 Gray */
-  font-family: "Courier New", Courier, monospace;
-  font-weight: bold;
-  color: #000000;
-  padding: 8px 15px;
-  text-align: center;
-  display: inline-block;
-  font-size: 14px;
-  border: 3px outset #ffffff;
-  cursor: pointer;
-  margin: 4px;
-}
-
-button:active {
-  border: 3px inset #ffffff;
-  background-color: #a0a0a0;
-}
-
-.Slagord {
-    color: #00ff00; /* Retro terminal green */
-    text-align: center;
+button.crt-btn {
+    background-color: #003300;
+    color: #00ff00;
+    border: 1px outset #00ff00;
+    font-family: "Courier New", Courier, monospace;
+    padding: 4px 8px;
+    margin: 3px;
+    cursor: pointer;
     font-weight: bold;
-    font-size: 18px;
-    margin-top: 15px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
 }
 
-.Award {
-    text-align: center;
-    margin-top: 20px;
+button.crt-btn:hover {
+    background-color: #005500;
 }
 
-.Award img {
-    width: 250px;
-    height: 150px;
-}
-
-/* Center forms globally for old-school alignment */
-form {
-    margin: 10px 0;
+button.crt-btn:active {
+    border: 1px inset #00ff00;
 }
 
 

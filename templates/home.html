@@ -4,37 +4,49 @@
 {% endblock %}
 
 {% block body %}
+<div class="atm-screen-bezel">
+    <div class="atm-buttons-left">
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+    </div>
 
-<div style="text-align: center; border: 3px double #ffffff; padding: 15px; background-color: #000066; width: 700px; margin: 0 auto;">
+    <div class="crt-screen">
+        <h2>=== ACCOUNT DASHBOARD ===</h2>
+        <h2 style="color: #ffffff; margin: 10px 0;">BALANCE: {{ total }} $</h2>
+        <hr style="border: 0; border-top: 1px dashed #00ff00; margin: 8px 0;">
 
-    <h1>=== ACCOUNT DASHBOARD ===</h1>
+        <p style="text-align: center;">SELECT DEPOSIT AMOUNT:</p>
+        <form method="POST" action="/home" style="text-align: center;">
+            <button type="submit" name="Money" value="1000" class="crt-btn">+ $1000</button>
+            <button type="submit" name="Money" value="100" class="crt-btn">+ $100</button>
+            <button type="submit" name="Money" value="10" class="crt-btn">+ $10</button>
+            <button type="submit" name="Money" value="1" class="crt-btn">+ $1</button>
+        </form>
 
-    <h2>Total money: {{ total }} $</h2>
-    <hr style="border: 1px solid #ffff00; width: 60%;">
+        <div style="display: flex; justify-content: space-around; margin-top: 10px;">
+            <form method="POST" action="/logout" style="display:inline;">
+                <button type="submit" class="crt-btn" style="background-color: #444; color: #fff;">LOGOUT</button>
+            </form>
 
-    <p>Select deposit amount:</p>
-    <form method="POST" action="/home">
-        <button type="submit" name="Money" value="1000">Add 1000 Dollars</button>
-        <button type="submit" name="Money" value="100">Add 100 Dollars</button>
-        <button type="submit" name="Money" value="10">Add 10 Dollars</button>
-        <button type="submit" name="Money" value="1">Add 1 Dollars</button>
-    </form>
+            <form method="POST" action="/Bankreset" style="display:inline;">
+                <button type="submit" class="crt-btn" style="background-color: #663333; color: #ff9999;">RESET</button>
+            </form>
 
-    <br>
-    <hr style="border: 1px dashed #c0c0c0; width: 40%;">
+            <form method="POST" action="/delete" style="display:inline;">
+                <button type="submit" class="crt-btn" style="background-color: #660000; color: #ffffff;">DELETE</button>
+            </form>
+        </div>
+    </div>
 
-    <form method="POST" action="/logout">
-        <button type="submit" style="background-color: #e0e0e0;">Logout</button>
-    </form>
-
-    <form method="POST" action="/Bankreset">
-        <button type="submit" style="background-color: #ffcccc;">Bankreset</button>
-    </form>
-
-    <form method="POST" action="/delete">
-        <button type="submit" style="background-color: #ff0000; color: white;">DELETE ACCOUNT</button>
-    </form>
-
+    <div class="atm-buttons-right">
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+    </div>
 </div>
+
 
 {% endblock %}

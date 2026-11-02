@@ -4,32 +4,81 @@
 {% endblock %}
 
 {% block body %}
+<div class="atm-screen-bezel">
+    <!-- Left ATM Side Buttons -->
+    <div class="atm-buttons-left">
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+    </div>
 
-<div class="content">
-    <img src="{{ url_for('static', filename='shittybank.png') }}" alt="Logo">
-    <hr style="border: 1px dashed #ffff00; width: 80%;">
-    <p>[SECURE MEMBER LOGIN PORTAL]</p>
+    <!-- CRT Monitor Display -->
+    <div class="crt-screen">
+        <h2>=== 1995 ATM NETWORK ===</h2>
+        <p style="text-align: center;">[SECURE MEMBER LOGIN]</p>
+        <hr style="border: 0; border-top: 1px dashed #00ff00; margin: 10px 0;">
 
-    <form method="POST">
-        <div>
-            <input type="text" name="username" placeholder="Write username here" required>
-        </div>
-        <div>
-            <input type="password" name="password" placeholder="Write password here" required>
-        </div>
-        <div>
-            <button type="submit" name="action" value="register">Create account</button>
-            <button type="submit" name="action" value="login">Login</button>
-        </div>
+        <form method="POST">
+            <p>USER ID:</p>
+            <div>
+                <input type="text" name="username" placeholder="ENTER USERNAME" required>
+            </div>
+            <p>PIN CODE:</p>
+            <div>
+                <input type="password" name="password" placeholder="ENTER PIN" required>
+            </div>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <button type="submit" name="action" value="register" class="crt-btn">REGISTER</button>
+                <button type="submit" name="action" value="login" class="crt-btn">LOGIN</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Right ATM Side Buttons -->
+    <div class="atm-buttons-right">
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+        <button class="atm-side-btn"></button>
+    </div>
+</div>
+
+
+
+
+<!-- Bottom Physical ATM Panel (Slots & Keypad) -->
+<div class="atm-control-panel">
+    <div class="atm-slot"></div>
+    <form method="POST" action="/pinnumbers">
+        <button type="submit" name="Pin" value="1" class="crt-btn">1</button>
+        <button type="submit" name="Pin" value="2" class="crt-btn">2</button>
+        <button type="submit" name="Pin" value="3" class="crt-btn">3</button>
+        <button type="submit" name="Pin" value="4" class="crt-btn">4</button>
+        <button type="submit" name="Pin" value="5" class="crt-btn">5</button>
+        <button type="submit" name="Pin" value="6" class="crt-btn">6</button>
+        <button type="submit" name="Pin" value="7" class="crt-btn">7</button>
+        <button type="submit" name="Pin" value="8" class="crt-btn">8</button>
+        <button type="submit" name="Pin" value="9" class="crt-btn">9</button>
+        <button type="submit" name="Pin" value="0" class="crt-btn">0</button>
     </form>
+    <form method="POST" action="/clear">
+        <button type="submit" class="crt-btn">CLR</button>
+        <button class="keypad-btn cancel">CAN</button>
+    </form>
+    <button class="keypad-btn enter" style="grid-column: span 3;">ENTER</button>
+
+    <div class="card-reader">
+        <div style="font-size: 8px; color: #aaa; margin-bottom: 2px;">CARD</div>
+        <div class="card-slot-line"></div>
+    </div>
 </div>
 
-<div class="Slagord">
-    <p>*** Safest bank in the world Directorate Approved! ***</p>
-</div>
 
-<div class="Award">
-    <img src="{{ url_for('static', filename='award.avif') }}" alt="Award Logo">
-</div>
 
+
+<div class="Slagord" style="text-align: center; margin-top: 15px;">
+    <p>*** DIRECTATE APPROVED 1995 ATM SYSTEM ***</p>
+</div>
 {% endblock %}

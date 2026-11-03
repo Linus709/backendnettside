@@ -1,27 +1,48 @@
-from flask import Flask, render_template, url_for, request, session, redirect
+from flask import Flask, render_template, url_for, request, session, redirect, abort
+
 from flask_sqlalchemy import SQLAlchemy
+
+import json
 import bcrypt
-from typing import Tuple
+
+from uuid import uuid4
 from datetime import datetime
+from typing import Tuple
 
 #all this code under here to make it possible to login and make a user and hash
 #i have created everything here and is used by me to learn backend coding here.
 
 app = Flask(__name__)
+app.config['DEBUG'] = True
 app.secret_key = "Change-this-to-a-long-random-secret"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # lagrer data i kolonner/column i id tall/integer 
+    # lagrer data i kolonner/column i id tall/integer
     username = db.Column(db.String(150), unique=True, nullable=False)
     # lagrer data i kolonner/column i username string
-    password = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     #lagrer data i kolonner/column i password string
 
+class AuditLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    request_id = db.Column(db.String(80), nullable=False)
+    #this identifies the id because og request of id
+    history = db.Column(db.Text(), nullable=True)
+    #this stores information about the change very important for history of logins and registers.
+    model_name = db.Column(db.String(80), nullable=False)
+    #this finds out with model name which database model that was changed
+    original_id = db.Column(db.Integer)
+    #what was the original id of the affetced user like integer
+    db_event_name = db.Column(db.String(80), nullable=False)
+    #just finds out if it is register edit delete or login
+
+
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<AuditLog {self.id}: {self.db_event_name}>'
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -38,7 +59,7 @@ def index():
 
             existing_user = User.query.filter_by(username=username).first()
             if existing_user:
-                return app.redirect("/wrong")
+                return redirect("/wrong")
 #this is for writing username and if it is taken on the website it will return message if not it will go further down
 
             hashed_password = hash_pwd(password).decode("utf-8")
@@ -51,7 +72,12 @@ def index():
             else:
                 db.session.add(new_user)
                 db.session.commit()
-                return app.redirect("/Success")
+                create_log(new_user.id, "register", {
+                    "username": new_user.username,
+                    "action": "New account created"
+                })
+                #we need to create_log here så the log knows whats going on like newuserid would be displayed username in database.
+                return redirect("/Success")
 #this code makes it possible to write a new username and password if it was valid then it will return Account was created. 
 
         elif action == "login":
@@ -60,12 +86,42 @@ def index():
             if user and check_pwd(password, user.password.encode("utf-8")):
                 session.clear()
                 session["user_id"] = user.id
-                return app.redirect("/home")
+                create_log(user.id, "login", {
+                    "username": user.username,
+                    "action": "User logged in"
+                })
+                #here the same process is going on it sends this to the log and connects with the function so it can display it in database who logged in.
+                return redirect("/home")
             else:
-                return app.redirect("/wrong")
+                return redirect("/wrong")
+    return render_template("index.html")
 
+def create_log(user_id, action, history=None):
+
+    log = AuditLog(
+        request_id=str(uuid4()),
+        model_name="User",
+        original_id=user_id,
+        db_event_name=action,
+        history=json.dumps(history) if history else None   
+        #the whole code over here is the functions that make the log work and sends it to database
+    )
+    db.session.add(log)
+    db.session.commit()
+    print(log)
+    # this adds and commits the log auditlog updates that happens when code is getting used like logging in.
 
     return render_template("index.html")
+
+
+
+
+
+
+
+
+
+
 
 
 #HASHING CODE UNDER HERE
@@ -79,75 +135,68 @@ def check_pwd(password:int,hash:bytes) -> bool:
     return bcrypt.checkpw(password.encode(),hash)
 #koden over her gir passordet en hash som kan lagres og sjekke om passordet stemmer med hashet på chech_pwd
 
-class UserAuth:
-    def __init__(self):
-        self.users = {}
-        self.login_attempts = {}
-        self.max_attempts = 3
-        self.lockout_minutes = 15
 
-    def add_user(self, username: str, password: str) -> bool:
-        if username in self.users:
-            return False
-
-        self.users[username] = {
-            'pwd_hash': hash_pwd(password),
-            'created_at': datetime.now(),
-            'pwd_rounds': 12
+def add_user(self, username: str, password: str) -> bool:
+    if username in self.users:
+        return False
+    self.users[username] = {
+        'pwd_hash': hash_pwd(password),
+        'created_at': datetime.now(),
+        'pwd_rounds': 12
         }
-        return True
+    return True
 
-    def login(self, username: str, password: str) -> Tuple[bool, str]:
-        if self._is_locked(username):
-            return False, "Too many attempts, account locked!"
+def login(self, username: str, password: str) -> Tuple[bool, str]:
+    if self._is_locked(username):
+        return False, "Too many attempts, account locked!"
 
-        if username not in self.users:
-            return False, "Invalid user info..."
+    if username not in self.users:
+        return False, "Invalid user info..."
 
-        user = self.users[username]
+    user = self.users[username]
 
-        if not check_pwd(password, user['pwd_hash']):
-            self._track_attempts(username)
-            return False, "Invalid user info..."
+    if not check_pwd(password, user['pwd_hash']):
+        self._track_attempts(username)
+        return False, "Invalid user info..."
 
-        if username in self.login_attempts:
-            del self.login_attempts[username]
+    if username in self.login_attempts:
+        del self.login_attempts[username]
 
-        self._upgrade_hash(username, password)
-        return True, "Success!"
+    self._upgrade_hash(username, password)
+    return True, "Success!"
 
-    def _is_locked(self, username: str) -> bool:
-        if username not in self.login_attempts:
-            return False
-
-        attempts, last_attempt = self.login_attempts[username]
-
-        if attempts >= self.max_attempts:
-            mins_passed = (datetime.now() - last_attempt).total_seconds() / 60
-
-            if mins_passed < self.lockout_minutes:
-                return True
-
-            del self.login_attempts[username]
-
+def _is_locked(self, username: str) -> bool:
+    if username not in self.login_attempts:
         return False
 
-    def _track_attempts(self, username: str):
-        now = datetime.now()
+    attempts, last_attempt = self.login_attempts[username]
 
-        if username in self.login_attempts:
-            attempts, _ = self.login_attempts[username]
-            self.login_attempts[username] = (attempts + 1, now)
-        else:
-            self.login_attempts[username] = (1, now)
+    if attempts >= self.max_attempts:
+        mins_passed = (datetime.now() - last_attempt).total_seconds() / 60
 
-    def _upgrade_hash(self, username: str, password: str):
-        user = self.users[username]
-        min_rounds = 14
+        if mins_passed < self.lockout_minutes:
+            return True
 
-        if user['pwd_rounds'] < min_rounds:
-            user['pwd_hash'] = hash_pwd(password, min_rounds)
-            user['pwd_rounds'] = min_rounds
+        del self.login_attempts[username]
+
+    return False
+
+def _track_attempts(self, username: str):
+    now = datetime.now()
+
+    if username in self.login_attempts:
+        attempts, _ = self.login_attempts[username]
+        self.login_attempts[username] = (attempts + 1, now)
+    else:
+        self.login_attempts[username] = (1, now)
+
+def _upgrade_hash(self, username: str, password: str):
+    user = self.users[username]
+    min_rounds = 14
+
+    if user['pwd_rounds'] < min_rounds:
+        user['pwd_hash'] = hash_pwd(password, min_rounds)
+        user['pwd_rounds'] = min_rounds
 
 
 
@@ -156,10 +205,8 @@ class UserAuth:
 
 
 
-# denne koden brukes når du har laget konto og skal logge inn så hvis du skriver på username og password og det finnes når
-# du trykker login så viser den welcome back username else invalid username or password.
-
-#code to add buttons and a table for money under her
+# denne koden brukes når du har laget konto eller logget inn så vil du ha en bank som kan ha penger siden du har lagt til fra før
+#eller en ny bank hvis det er en ny registrert user.
 
 
 class Bank(db.Model):
@@ -195,6 +242,7 @@ def home():
 
         if Money in ["1000", "100", "10", "1"]:
             bank.total = bank.total + int(Money)
+
             db.session.commit()
 
             return redirect("/home")
@@ -224,7 +272,10 @@ def delete():
 #if you are deleting a user you must query first and this searchs the database of user given id
     try:
         db.session.delete(user_to_delete)
-        bank.total = 0
+        if bank:
+            db.session.delete(bank)
+        create_log(user_id, "delete")
+        db.session.delete(user_to_delete)
         db.session.commit()
         session.clear()
         print("USER DELETED SUCCESSFULLY!")
@@ -255,19 +306,15 @@ def bankreset():
         print("bankreset DONE")
     return redirect("/home")
 
-@app.route("/pinnumbers", methods=["POST"])
-def pinnumbers():
+@app.route("/adminpin", methods=["POST"])
+def adminpin():
+    adminpin == 1234
 
     if request.method == "POST":
-        Pin = request.form.get("Pin")
+        pass
+    #not done
 
-        if Pin in ["1", "2", "3", "4", "5", "6", "7", "8", "9" "0"]:
-            password = password +int(Pin)
-            db.session.commit()
-
-        return redirect("/")
-        
-    return render_template("/home.html")
+    
 
 @app.route("/clear", methods=["POST"])
 def clear():
@@ -303,11 +350,11 @@ if __name__ == "__main__":
 # log out   DONE
 # secure password storage DONE
 # Make webiste look like ATM from 90s DONE
-# make website only register and login with pincode/integer ONGOING
-# make website only register and login with username/string ONGOING
-# make pins 123456789 work to pincode register and login NOT DONE
-# make clear to refresh main page NOT DONE
-# enter button to login or register into website NOT DONE 
+# make a admin pin with the pin buttons NOT DONE AND DIFFICULT TO DO SO WOULD BE EXTRA MISSION IF DONE
+# create a list/track og recent action, small display/scrolling box showing past events DONE 
+# create a custom deposit field for money NOT DONE
+
+
 
 
 

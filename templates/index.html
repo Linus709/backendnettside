@@ -1,10 +1,13 @@
+
 {% extends 'base.html' %}
 
 {% block head %}
 {% endblock %}
 
 {% block body %}
+
 <div class="atm-screen-bezel">
+
     <!-- Left ATM Side Buttons -->
     <div class="atm-buttons-left">
         <button class="atm-side-btn"></button>
@@ -15,25 +18,51 @@
 
     <!-- CRT Monitor Display -->
     <div class="crt-screen">
+
         <h2>=== 1995 ATM NETWORK ===</h2>
+
         <p style="text-align: center;">[SECURE MEMBER LOGIN]</p>
+
         <hr style="border: 0; border-top: 1px dashed #00ff00; margin: 10px 0;">
 
         <form method="POST">
+
             <p>USER ID:</p>
             <div>
-                <input type="text" name="username" placeholder="ENTER USERNAME" required>
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="ENTER USERNAME"
+                    required>
             </div>
+
             <p>PIN CODE:</p>
             <div>
-                <input type="password" name="password" placeholder="ENTER PIN" required>
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="ENTER PIN"
+                    maxlength="20"
+                    required>
             </div>
 
             <div style="text-align: center; margin-top: 15px;">
-                <button type="submit" name="action" value="register" class="crt-btn">REGISTER</button>
-                <button type="submit" name="action" value="login" class="crt-btn">LOGIN</button>
+
+                <button type="submit" name="action"
+                        value="register" class="crt-btn">
+                    REGISTER
+                </button>
+
+                <button type="submit" name="action"
+                        value="login" class="crt-btn">
+                    LOGIN
+                </button>
+
             </div>
+
         </form>
+
     </div>
 
     <!-- Right ATM Side Buttons -->
@@ -43,42 +72,64 @@
         <button class="atm-side-btn"></button>
         <button class="atm-side-btn"></button>
     </div>
+
 </div>
 
 
-
-
-<!-- Bottom Physical ATM Panel (Slots & Keypad) -->
+<!-- Bottom Physical ATM Panel -->
 <div class="atm-control-panel">
+
     <div class="atm-slot"></div>
-    <form method="POST" action="/pinnumbers">
-        <button type="submit" name="Pin" value="1" class="crt-btn">1</button>
-        <button type="submit" name="Pin" value="2" class="crt-btn">2</button>
-        <button type="submit" name="Pin" value="3" class="crt-btn">3</button>
-        <button type="submit" name="Pin" value="4" class="crt-btn">4</button>
-        <button type="submit" name="Pin" value="5" class="crt-btn">5</button>
-        <button type="submit" name="Pin" value="6" class="crt-btn">6</button>
-        <button type="submit" name="Pin" value="7" class="crt-btn">7</button>
-        <button type="submit" name="Pin" value="8" class="crt-btn">8</button>
-        <button type="submit" name="Pin" value="9" class="crt-btn">9</button>
-        <button type="submit" name="Pin" value="0" class="crt-btn">0</button>
+
+
+    <form method="POST" action="/adminpin">
+    <!-- Number Keypad -->
+    <input type="password" id="pin" placeholder="ENTER ADMIN PIN" readonly>
+    <div class="Keypad">
+        <button type="button" onclick="addnumber('1')">1</button>
+        <button type="button" onclick="addnumber('2')">2</button>
+        <button type="button" onclick="addnumber('3')">3</button>
+        <button type="button" onclick="addnumber('4')">4</button>
+        <button type="button" onclick="addnumber('5')">5</button>
+        <button type="button" onclick="addnumber('6')">6</button>
+        <button type="button" onclick="addnumber('7')">7</button>
+        <button type="button" onclick="addnumber('8')">8</button>
+        <button type="button" onclick="addnumber('9')">9</button>
+        <button type="button" onclick="addnumber('0')">0</button>
+    </div>
     </form>
+
+    <!-- Clear and Cancel -->
+    
     <form method="POST" action="/clear">
+
         <button type="submit" class="crt-btn">CLR</button>
-        <button class="keypad-btn cancel">CAN</button>
+
+        <button type="submit" class="keypad-btn cancel">CAN</button>
+
     </form>
+
     <button class="keypad-btn enter" style="grid-column: span 3;">ENTER</button>
 
+    <!-- Card Reader -->
     <div class="card-reader">
-        <div style="font-size: 8px; color: #aaa; margin-bottom: 2px;">CARD</div>
+
+        <div style="font-size: 8px; color: #aaa; margin-bottom: 2px;">
+            CARD
+        </div>
+
         <div class="card-slot-line"></div>
+
     </div>
+
 </div>
 
 
-
-
+<!-- ATM Slogan -->
 <div class="Slagord" style="text-align: center; margin-top: 15px;">
+
     <p>*** DIRECTATE APPROVED 1995 ATM SYSTEM ***</p>
+
 </div>
+
 {% endblock %}

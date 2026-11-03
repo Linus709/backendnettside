@@ -1,5 +1,5 @@
 /* --- 1995 ATM Theme --- */
-# this is not created by me
+/* this is not created by me i only focus on backend in this project */
 
 body {
     background-color: #1a1a1a; /* Dark background behind the ATM machine */
@@ -199,5 +199,4 @@ button.crt-btn:hover {
 button.crt-btn:active {
     border: 1px inset #00ff00;
 }
-
 

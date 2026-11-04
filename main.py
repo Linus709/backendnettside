@@ -72,7 +72,7 @@ def index():
             else:
                 db.session.add(new_user)
                 db.session.commit()
-                create_log(new_user.id, "register", {
+                create_log(new_user.id, "REGISTERED_ACCOUNT", {
                     "username": new_user.username,
                     "action": "New account created"
                 })
@@ -86,7 +86,7 @@ def index():
             if user and check_pwd(password, user.password.encode("utf-8")):
                 session.clear()
                 session["user_id"] = user.id
-                create_log(user.id, "login", {
+                create_log(user.id, "LOGGED_IN_ACCOUNT", {
                     "username": user.username,
                     "action": "User logged in"
                 })
@@ -100,18 +100,22 @@ def create_log(user_id, action, history=None):
 
     log = AuditLog(
         request_id=str(uuid4()),
+        #this code creates a uniqe id for log entry it is completly random with uuid4 like this(550e8400-e29b-41d4-a716-446655440000)
         model_name="User",
+        #thid code tells who get information and is affected and user is like the main databasemodel.
         original_id=user_id,
+        #this just stores id from the event that happend so if somebody logs in it stores id of that user
         db_event_name=action,
+        #this finds out which event it was. was it delete, login osv.
         history=json.dumps(history) if history else None   
+        # just some additional information in this case noene but i can write basically anything under to log like the delete
         #the whole code over here is the functions that make the log work and sends it to database
     )
     db.session.add(log)
     db.session.commit()
     print(log)
-    # this adds and commits the log auditlog updates that happens when code is getting used like logging in.
+    # this over here adds and commits the log auditlog updates that happens when code is getting used like logging in.
 
-    return render_template("index.html")
 
 
 
@@ -224,8 +228,25 @@ def home():
 
     user_id = session["user_id"]
 
+    Money = request.form.get("Money")
+    user = User.query.get_or_404(user_id)
+    #henter hvilken user id det er i databasen
     bank = Bank.query.filter_by(user_id=user_id).first()
     #denne filtrer til at den vet user id som er de som er logget inn med penger
+
+    log = AuditLog(
+        request_id=str(uuid4()),
+        model_name="Money_added",
+        original_id=bank.id,
+        db_event_name="BANK_UPDATED",
+        history=json.dumps({
+            "username": user.username,
+            "old_total": bank.total,
+            "moneyadded": Money,
+        })
+    )
+
+    db.session.add(log)
 
 
     # If there is no bank account, create one
@@ -257,54 +278,83 @@ def logout():
 
 
 
+
+
+
 #DELETE BUTTON CODE 
 @app.route('/delete', methods=["POST"])
 def delete():
-    id = session.get("user_id")
+    if "user_id" not in session:
+        return redirect("/")
+    
     user_id = session["user_id"]
+
+    user_to_delete = User.query.get_or_404(user_id)
     bank = Bank.query.filter_by(user_id=user_id).first()
-#this gets the user id that is logged in now
-    if id is None:
-        return redirect("/")
-# if there is no id go back home
-
-    user_to_delete = User.query.get_or_404(id)
 #if you are deleting a user you must query first and this searchs the database of user given id
-    try:
-        db.session.delete(user_to_delete)
-        if bank:
-            db.session.delete(bank)
-        create_log(user_id, "delete")
-        db.session.delete(user_to_delete)
-        db.session.commit()
-        session.clear()
-        print("USER DELETED SUCCESSFULLY!")
-        return redirect("/")
-# this is the code that will delete the user and clear logs the user out and removes everything stored in flask session
+    
+    log = AuditLog(
+            request_id=str(uuid4()),
+            model_name="User",
+            original_id=user_to_delete.id,
+            db_event_name="ACCOUNT DELETED",
+            history=json.dumps({
+                "username": user_to_delete.username,
+                "action": bank.total if bank else None
+            })
+    )
 
-    except:
-        db.session.rollback()
-        #this code just makes sure that if it didnt work we keep those ncommited changes
-        print("it didnt work!")
-        return redirect("/home")
+    db.session.add(log)
+
+    if bank:
+        db.session.delete(bank)
+    db.session.delete(user_to_delete)
+    #this over actually deletes bank and user and i add this proces to log before delete so it works
+    #then just commits and clear up then print that it works i terminal and return you back to login and register
+    db.session.commit()
+    session.clear()
+    print("USER DELETED SUCCESSFULLY!")
+    return redirect("/")
+
+
+
+
+
+
+    
 
 
 #This button code will reset your bank money
 @app.route("/Bankreset", methods=["POST"])
 def bankreset():
     if "user_id" not in session:
-            return redirect("/")
-    
+        return redirect("/")
+
     user_id = session["user_id"]
-    #this 2 codes make so it knows about the user that is logged in now and the bank login username and password
+
+    user = User.query.get_or_404(user_id)
     bank = Bank.query.filter_by(user_id=user_id).first()
-    
-    if bank:
-        bank.total = 0
-        #sets bank total at 0 and commits to database and prints out in my terminal that it worked then last keeps me at home html
-        db.session.commit()
-        print("bankreset DONE")
+
+    log = AuditLog(
+        request_id=str(uuid4()),
+#uuid4 is similar to hash. Under column request_id there is a bunch of request ids with 
+# random letters and then a base id with numbers from 1 to whatevernumber
+        model_name="Bank",
+        original_id=bank.id,
+        db_event_name="BANK_RESET",
+        history=json.dumps({
+            "username": user.username,
+            "new_total": 0,
+            "action": "bank reset success",
+            })
+        )
+
+    db.session.add(log)
+    bank.total = 0
+    db.session.commit()
+    print("BANK RESET SUCCESSFUL!!!")
     return redirect("/home")
+
 
 @app.route("/adminpin", methods=["POST"])
 def adminpin():
@@ -340,7 +390,7 @@ if __name__ == "__main__":
 
 
 
-# my webiste
+# my webiste things that is achieved
 # register users  DONE
 # log in users    DONE
 # save users using sqlite DONE
@@ -350,9 +400,13 @@ if __name__ == "__main__":
 # log out   DONE
 # secure password storage DONE
 # Make webiste look like ATM from 90s DONE
+# create a list/track og recent action, small display/scrolling box showing past events ALMOST 
+#list for delete DONE
+#list for login DONE
+# list for register DONE
+# list for bankdeposits DONE
+# list for reset bank DONE
 # make a admin pin with the pin buttons NOT DONE AND DIFFICULT TO DO SO WOULD BE EXTRA MISSION IF DONE
-# create a list/track og recent action, small display/scrolling box showing past events DONE 
-# create a custom deposit field for money NOT DONE
 
 
 

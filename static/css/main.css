@@ -1,9 +1,8 @@
 /* --- 1995 ATM Theme --- */
-/* this is not created by me i only focus on backend in this project */
 
 body {
-    background-color: #1a1a1a; /* Dark background behind the ATM machine */
-    color: #00ff00;            /* Phosphor green text */
+    background-color: #1a1a1a; /* Mørk bakgrunn bak ATM-maskinen */
+    color: #00ff00;            /* Fosforgrønn tekst */
     font-family: "Courier New", Courier, monospace;
     margin: 0;
     padding: 20px;
@@ -13,9 +12,9 @@ body {
     min-height: 100vh;
 }
 
-/* The Main ATM Plastic Casing */
+/* Hovedkabinettet til ATM-en (plastikk) */
 .atm-machine {
-    background-color: #d1c9b8; /* Classic 90s beige/off-white plastic */
+    background-color: #d1c9b8; /* Klassisk 90-talls beige/off-white plast */
     border: 6px outset #f0e6d2;
     border-radius: 8px;
     padding: 30px;
@@ -24,9 +23,9 @@ body {
     margin: 0 auto;
 }
 
-/* CRT Monitor Screen Bezel */
+/* CRT-skjermens innfatning */
 .atm-screen-bezel {
-    background-color: #4a4740; /* Dark gray recessed monitor border */
+    background-color: #4a4740; /* Mørk grå innfelt skjermramme */
     border: 5px inset #2b2925;
     padding: 20px;
     margin-bottom: 25px;
@@ -36,11 +35,11 @@ body {
     align-items: center;
 }
 
-/* The Actual CRT Screen */
+/* Den faktiske CRT-skjermen */
 .crt-screen {
-    background-color: #001100; /* Deep black-green CRT background */
+    background-color: #001100; /* Dyp svartgrønn CRT-bakgrunn */
     border: 4px inset #003300;
-    color: #00ff00;            /* Bright green monochrome text */
+    color: #00ff00;            /* Sterk grønn monokrom tekst */
     padding: 15px;
     width: 440px;
     min-height: 240px;
@@ -51,7 +50,7 @@ body {
     overflow: hidden;
 }
 
-/* Scanline overlay effect for retro feel */
+/* Scanline-effekt for retro-følelse */
 .crt-screen::before {
     content: " ";
     display: block;
@@ -63,7 +62,7 @@ body {
     pointer-events: none;
 }
 
-/* ATM Side Selection Buttons (Soft Keys) */
+/* ATM sideknapper (myke knapper) */
 .atm-buttons-left, .atm-buttons-right {
     display: flex;
     flex-direction: column;
@@ -81,21 +80,42 @@ body {
 
 .atm-side-btn:active {
     border: 2px inset #ffffff;
-    background-color: c5bfae;
+    background-color: #c5bfae;
 }
 
-/* Lower ATM Control Panel (Keypad & Slots) */
+/* Nedre kontrollpanel (tastatur og spor) - fullstendig sentrert */
 .atm-control-panel {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     background-color: #c4bca8;
-    padding: 15px;
+    padding: 15px 20px;
     border: 3px inset #a39c89;
     border-radius: 4px;
 }
 
-/* Cash Dispenser Slot */
+/* Seksjon for admin-PIN og tastatur */
+.keypad-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.keypad-section input[type="password"] {
+    background-color: #001100;
+    color: #00ff00;
+    border: 2px inset #003300;
+    padding: 6px;
+    font-family: "Courier New", Courier, monospace;
+    width: 140px;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+/* Kontantutleveringsspor */
 .atm-slot {
     background-color: #2b2925;
     border: 3px inset #111;
@@ -113,7 +133,7 @@ body {
     background-color: #000;
 }
 
-/* Retro Numeric Keypad */
+/* Retro numerisk tastatur (fullstendig sentrert) */
 .atm-keypad {
     display: grid;
     grid-template-columns: repeat(3, 40px);
@@ -121,6 +141,7 @@ body {
     background-color: #5c574e;
     padding: 8px;
     border: 3px inset #333;
+    justify-content: center;
 }
 
 .keypad-btn {
@@ -138,7 +159,7 @@ body {
 .keypad-btn.enter { background-color: #66b366; color: #fff; }
 .keypad-btn:active { border: 2px inset #fff; }
 
-/* Card Reader Graphic */
+/* Kortleser-grafikk */
 .card-reader {
     background-color: #3b3732;
     border: 2px inset #222;
@@ -156,7 +177,7 @@ body {
     border-left: 1px solid #555;
 }
 
-/* General Typography & Elements inside the CRT */
+/* Generell typografi */
 h1, h2 {
     font-family: "Courier New", Courier, monospace;
     color: #00ff00;
@@ -199,4 +220,3 @@ button.crt-btn:hover {
 button.crt-btn:active {
     border: 1px inset #00ff00;
 }
-

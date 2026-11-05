@@ -43,6 +43,7 @@ class AuditLog(db.Model):
 
     def __repr__(self):
         return f'<AuditLog {self.id}: {self.db_event_name}>'
+#denne kode linjen over er en must på nettside. den definerer hvordan er objekt skal vises som string i terminalen
 
 
 @app.route("/", methods=["GET", "POST"])
